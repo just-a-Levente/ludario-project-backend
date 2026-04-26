@@ -1,7 +1,7 @@
 from pydantic import BaseModel
 
 class Boardgame(BaseModel):
-    id: int
+    id: int = -1
     hidden: bool = False
     name: str = ""
     producer: str = ""
