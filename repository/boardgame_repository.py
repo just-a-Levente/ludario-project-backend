@@ -10,6 +10,10 @@ class BoardgameRepository:
         self.lastID = 0
 
     @property
+    def get_boardgames(self) -> list[Boardgame]:
+        return list(self.boardgames.values())
+
+    @property
     def number_of_boardgames(self) -> int:
         return len(self.boardgames)
 

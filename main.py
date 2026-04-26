@@ -1,8 +1,9 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Query
+from typing import Annotated
 
 app = FastAPI()
 
 
 @app.get("/")
 async def root():
-    return {"message": "Ludario API root"}
+    return "Ludario API root"
