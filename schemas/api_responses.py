@@ -15,7 +15,7 @@ class BoardgameCreateRequest(BoardgameBase):
     pass
 
 class BoardgameUpdateRequest(BoardgameBase):
-    pass
+    id: int
 
 class BoardgameDeleteRequest(BaseModel):
     id: int
