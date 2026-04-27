@@ -10,10 +10,10 @@ class BoardgameAPIMapper:
             name=request.name,
             producer=request.producer,
             description=request.description,
-            price=request.price,
-            numberOfCopies=request.numberOfCopies,
-            minNumberOfPlayers=request.minNumberOfPlayers,
-            maxNumberOfPlayers=request.maxNumberOfPlayers,
+            price=float(request.price),
+            numberOfCopies=int(request.numberOfCopies),
+            minNumberOfPlayers=int(request.minNumberOfPlayers),
+            maxNumberOfPlayers=int(request.maxNumberOfPlayers),
             thumbnailURL=request.thumbnailURL,
             tags=request.tags.split(';')
         )
@@ -25,10 +25,10 @@ class BoardgameAPIMapper:
             name=request.name,
             producer=request.producer,
             description=request.description,
-            price=request.price,
-            numberOfCopies=request.numberOfCopies,
-            minNumberOfPlayers=request.minNumberOfPlayers,
-            maxNumberOfPlayers=request.maxNumberOfPlayers,
+            price=float(request.price),
+            numberOfCopies=int(request.numberOfCopies),
+            minNumberOfPlayers=int(request.minNumberOfPlayers),
+            maxNumberOfPlayers=int(request.maxNumberOfPlayers),
             thumbnailURL=request.thumbnailURL,
             tags=request.tags.split(';')
         )
