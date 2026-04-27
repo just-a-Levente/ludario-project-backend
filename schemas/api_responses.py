@@ -21,19 +21,7 @@ class BoardgameDeleteRequest(BaseModel):
     id: int
 
 
-class BoardgameCardDisplayResponse(BaseModel):
-    id:             int
-    thumbnailURL:   str
-
-class BoardgameListDisplayResponse(BaseModel):
-    id:                 int
-    name:               str
-    producer:           str
-    numberOfCopies:     int
-    minNumberOfPlayers: int
-    maxNumberOfPlayers: int
-
-class BoardgameDetailsDisplayResponse(BaseModel):
+class BoardgameDisplayResponse(BaseModel):
     id:                 int
     name:               str
     producer:           str
