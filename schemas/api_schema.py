@@ -4,10 +4,10 @@ class BoardgameBase(BaseModel):
     name:               str
     producer:           str
     description:        str
-    price:              float
-    numberOfCopies:     int
-    minNumberOfPlayers: int
-    maxNumberOfPlayers: int
+    price:              str
+    numberOfCopies:     str
+    minNumberOfPlayers: str
+    maxNumberOfPlayers: str
     thumbnailURL:       str
     tags:               str
 
@@ -18,7 +18,7 @@ class BoardgameUpdateRequest(BoardgameBase):
     id: int
 
 class BoardgameDeleteRequest(BaseModel):
-    id: int
+    pass
 
 
 class BoardgameDisplayResponse(BaseModel):
