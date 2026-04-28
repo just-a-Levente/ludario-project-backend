@@ -1,5 +1,5 @@
 from model.boardgame import Boardgame
-from api_schema import *
+from schemas.api_schema import *
 
 class BoardgameAPIMapper:
 

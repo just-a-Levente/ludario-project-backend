@@ -27,3 +27,6 @@ class BoardgameService:
         BoardgameValidator().validate_boardgame_input(update_request)
         updated_boardgame_instance = BoardgameAPIMapper.update_boardgame_from_request(update_request)
         self.__repository.update_boardgame(updated_boardgame_instance)
+
+repo = BoardgameRepository()
+boardgame_service = BoardgameService(repo)
