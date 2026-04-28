@@ -8,8 +8,19 @@ class BoardgameService:
         self.__repository = repository
 
     def get_all_boardgames(self) -> list[BoardgameDisplayResponse]:
-        boardgames = self.__repository.get_boardgames
+        boardgames = self.__repository.get_all_boardgames
         return [BoardgameAPIMapper.boardgame_to_display_response(boardgame) for boardgame in boardgames]
+
+    def get_boardgames(self, offset: int, limit: int) -> PaginatedBoardgamesResponse:
+        boardgames = self.__repository.get_boardgames(offset, limit)
+        total_count = self.__repository.get_number_of_boardgames
+
+        return PaginatedBoardgamesResponse(
+            items=[BoardgameAPIMapper.boardgame_to_display_response(boardgame) for boardgame in boardgames],
+            total_count=total_count,
+            offset=offset,
+            limit=limit
+        )
 
     def get_boardgame(self, boardgame_id: int) -> BoardgameDisplayResponse:
         boardgame = self.__repository.get_boardgame(boardgame_id)

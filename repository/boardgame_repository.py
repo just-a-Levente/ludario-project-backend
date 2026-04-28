@@ -3,8 +3,8 @@ from model.boardgame import Boardgame
 class BoardgameRepository:
 
     def __init__(self):
-        self.boardgames: dict[int, Boardgame] = {}
-        self.lastID: int = 0
+        self.__boardgames: dict[int, Boardgame] = {}
+        self.__lastID: int = 0
         self.__fill_with_examples()
 
     def __fill_with_examples(self):
@@ -46,36 +46,40 @@ class BoardgameRepository:
         ))
 
     def reset_repo(self):
-        self.boardgames = {}
-        self.lastID = 0
+        self.__boardgames = {}
+        self.__lastID = 0
 
     @property
-    def get_boardgames(self) -> list[Boardgame]:
-        return list(self.boardgames.values())
+    def get_all_boardgames(self) -> list[Boardgame]:
+        return list(self.__boardgames.values())
 
     @property
-    def number_of_boardgames(self) -> int:
-        return len(self.boardgames)
+    def get_number_of_boardgames(self) -> int:
+        return len(self.__boardgames)
 
     @property
     def get_last_id(self) -> int:
-        return self.lastID
+        return self.__lastID
 
     def __increment_last_id(self):
-        self.lastID += 1
+        self.__lastID += 1
 
     def get_boardgame(self, boardgame_id: int) -> Boardgame | None:
-        return self.boardgames.get(boardgame_id)
+        return self.__boardgames.get(boardgame_id)
+
+    def get_boardgames(self, offset: int, limit: int) -> list[Boardgame]:
+        boardgames_list = list(self.__boardgames.values())
+        return boardgames_list[offset : offset + limit]
 
     def insert_boardgame(self, new_boardgame: Boardgame):
         if new_boardgame.id == -1:
             new_id = self.get_last_id
             self.__increment_last_id()
             new_boardgame.id = new_id
-        self.boardgames[new_boardgame.id] = new_boardgame
+        self.__boardgames[new_boardgame.id] = new_boardgame
 
     def update_boardgame(self, updated_boardgame: Boardgame):
-        self.boardgames[updated_boardgame.id] = updated_boardgame
+        self.__boardgames[updated_boardgame.id] = updated_boardgame
 
     def delete_boardgame(self, boardgame_id_to_delete: int):
-        self.boardgames.pop(boardgame_id_to_delete)
+        self.__boardgames.pop(boardgame_id_to_delete)

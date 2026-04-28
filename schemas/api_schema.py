@@ -32,3 +32,9 @@ class BoardgameDisplayResponse(BaseModel):
     maxNumberOfPlayers: int
     thumbnailURL:       str
     tags:               list[str]
+
+class PaginatedBoardgamesResponse(BaseModel):
+    items: list[BoardgameDisplayResponse]
+    total_count: int
+    offset: int
+    limit: int

@@ -1,6 +1,6 @@
-from fastapi import APIRouter, HTTPException, status
+from fastapi import APIRouter, status, Query
 from services.boardgame_service import boardgame_service
-from schemas.api_schema import BoardgameDisplayResponse, BoardgameCreateRequest, BoardgameUpdateRequest
+from schemas.api_schema import BoardgameDisplayResponse, BoardgameCreateRequest, BoardgameUpdateRequest, PaginatedBoardgamesResponse
 
 boardgame_router = APIRouter(prefix="/api/boardgames", tags=["boardgames"])
 
@@ -9,6 +9,13 @@ boardgame_router = APIRouter(prefix="/api/boardgames", tags=["boardgames"])
 )
 def get_all_boardgames():
     return boardgame_service.get_all_boardgames()
+
+@boardgame_router.get(
+    "/page",
+    response_model=PaginatedBoardgamesResponse
+)
+def get_boardgames(offset: int = Query(0, ge=0), limit: int = Query(10, ge=1, le=50)):
+    return boardgame_service.get_boardgames(offset, limit)
 
 @boardgame_router.get(
     "/{boardgame_id}",
