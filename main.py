@@ -1,7 +1,7 @@
 from fastapi import FastAPI, Response, status
 from fastapi.middleware.cors import CORSMiddleware
 from routers.boardgame_router import boardgame_router
-from services.validator_service import BoardgameValidationException
+from routers.status_router import status_router
 
 app = FastAPI(title="LudarioAPI")
 
@@ -14,6 +14,7 @@ app.add_middleware(
 )
 
 app.include_router(boardgame_router)
+app.include_router(status_router)
 
 
 # @app.exception_handler(BoardgameValidationException)
