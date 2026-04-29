@@ -265,7 +265,7 @@ class TestUpdateBoardgame:
         gid = create_game(client, sample_payload)
         updated = {**sample_payload, "id": gid, "name": "Updated Name", "price": "99.99"}
         res = client.put("/api/boardgames/", json=updated)
-        assert res.status_code == 204
+        assert res.status_code == 202
 
     def test_update_persisted(self, client, sample_payload):
         gid = create_game(client, sample_payload)

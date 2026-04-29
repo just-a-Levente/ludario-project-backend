@@ -27,10 +27,11 @@ def get_boardgame(boardgame_id: int):
 
 @boardgame_router.post(
     "/",
-    status_code=status.HTTP_201_CREATED
+    status_code=status.HTTP_201_CREATED,
+    response_model=BoardgameDisplayResponse
 )
 def create_boardgame(request: BoardgameCreateRequest):
-    boardgame_service.create_boardgame(request)
+    return boardgame_service.create_boardgame(request)
 
 @boardgame_router.delete(
     "/{boardgame_id}",
@@ -41,7 +42,8 @@ def delete_boardgame(boardgame_id: int):
 
 @boardgame_router.put(
     "/",
-    status_code=status.HTTP_204_NO_CONTENT
+    status_code=status.HTTP_202_ACCEPTED,
+    response_model=BoardgameDisplayResponse
 )
 def update_boardgame(request: BoardgameUpdateRequest):
-    boardgame_service.update_boardgame(request)
+    return boardgame_service.update_boardgame(request)
