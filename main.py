@@ -8,8 +8,8 @@ app = FastAPI(title="LudarioAPI")
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:4173", "http://localhost:5173"],
-    allow_credentials=True,
+    allow_origins=["*"], # TODO: not allow every IP, just the VM's
+    allow_credentials=False,   # allow_credentials is set to false cuz of wildcard, CHANGE LATER
     allow_methods=["*"],
     allow_headers=["*"],
 )
