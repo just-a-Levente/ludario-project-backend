@@ -1,11 +1,11 @@
-from datetime import date
+from datetime import date, datetime
 
 from pydantic import BaseModel
 
 class Review(BaseModel):
-    id: int
-    boardgameId: int
+    id: int = -1
+    boardgame_id: int = -1
     author: str = "unknown"
     stars: int = 0
     comment: str = ""
-    reviewDate: date
+    review_date: date = datetime.date(datetime.now())
