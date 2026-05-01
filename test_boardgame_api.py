@@ -65,7 +65,7 @@ def create_game(client, payload) -> int:
 class TestBoardgameRepository:
 
     def test_initial_state_is_empty_after_reset(self, repo):
-        assert repo.get_number_of_boardgames == 0
+        assert repo.number_of_boardgames == 0
 
     def test_insert_assigns_id_starting_at_zero(self, repo):
         game = Boardgame(name="Chess", producer="Generic")
@@ -114,7 +114,7 @@ class TestBoardgameRepository:
     def test_get_all_boardgames(self, repo):
         repo.insert_boardgame(Boardgame(name="A"))
         repo.insert_boardgame(Boardgame(name="B"))
-        assert len(repo.get_all_boardgames) == 2
+        assert len(repo.all_boardgames) == 2
 
     def test_get_boardgames_pagination_offset(self, repo):
         for i in range(5):
@@ -137,7 +137,7 @@ class TestBoardgameRepository:
     def test_reset_clears_all(self, repo):
         repo.insert_boardgame(Boardgame(name="Chess"))
         repo.reset_repo()
-        assert repo.get_number_of_boardgames == 0
+        assert repo.number_of_boardgames == 0
 
 
 class TestGetAllBoardgames:

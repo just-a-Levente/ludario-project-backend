@@ -50,15 +50,15 @@ class BoardgameRepository:
         self.__lastID = 0
 
     @property
-    def get_all_boardgames(self) -> list[Boardgame]:
+    def all_boardgames(self) -> list[Boardgame]:
         return list(self.__boardgames.values())
 
     @property
-    def get_number_of_boardgames(self) -> int:
+    def number_of_boardgames(self) -> int:
         return len(self.__boardgames)
 
     @property
-    def get_last_id(self) -> int:
+    def last_id(self) -> int:
         return self.__lastID
 
     def __increment_last_id(self):
@@ -73,7 +73,7 @@ class BoardgameRepository:
 
     def insert_boardgame(self, new_boardgame: Boardgame):
         if new_boardgame.id == -1:
-            new_id = self.get_last_id
+            new_id = self.last_id
             self.__increment_last_id()
             new_boardgame.id = new_id
         self.__boardgames[new_boardgame.id] = new_boardgame

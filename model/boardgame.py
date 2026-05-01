@@ -12,4 +12,3 @@ class Boardgame(BaseModel):
     maxNumberOfPlayers: int = 1
     thumbnailURL: str = ""
     tags: list[str] = []
-    stars: list[int] = []
