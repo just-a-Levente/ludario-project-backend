@@ -1,5 +1,10 @@
 from pydantic import BaseModel
 
+
+# -----------------
+# BOARDGAMES
+# -----------------
+
 class BoardgameBase(BaseModel):
     name:               str
     producer:           str
@@ -38,3 +43,26 @@ class PaginatedBoardgamesResponse(BaseModel):
     total_count: int
     offset: int
     limit: int
+
+class BoardgameDetailResponse(BoardgameDisplayResponse):
+    reviews: list[ReviewReadResponse]
+
+# -----------------
+# REVIEWS
+# -----------------
+
+class ReviewBase(BaseModel):
+    boardgame_id: int
+    author: str
+    stars: int
+    comment: str
+    review_date: str
+
+class ReviewCreateRequest(ReviewBase):
+    pass
+
+class ReviewUpdateRequest(ReviewBase):
+    id: int
+
+class ReviewDisplayResponse(ReviewBase):
+    id: int
