@@ -18,6 +18,6 @@ def generate_fake_boardgame() -> BoardgameCreateRequest:
         numberOfCopies=str(fake.random_int(min=1, max=20)),
         minNumberOfPlayers=str(fake.random_int(min=1, max=4)),
         maxNumberOfPlayers=str(fake.random_int(min=4, max=10)),
-        thumbnailURL=fake.image_url(),
+        thumbnailURL=fake.image_url(200, 200),
         tags=";".join(fake.random_elements(elements=fake_tags, length=fake.random_int(1, 3), unique=True)),
     )
