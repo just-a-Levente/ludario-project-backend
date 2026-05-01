@@ -8,7 +8,7 @@ boardgame_router = APIRouter(prefix="/api/boardgames", tags=["boardgames"])
     "/"
 )
 def get_all_boardgames():
-    return boardgame_service.all_boardgames()
+    return boardgame_service.get_all_boardgames()
 
 @boardgame_router.get(
     "/page",
