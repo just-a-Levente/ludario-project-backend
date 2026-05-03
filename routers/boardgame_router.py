@@ -1,12 +1,14 @@
 from fastapi import APIRouter, status, Query
 from services.boardgame_service import boardgame_service
-from schemas.api_schema import BoardgameDisplayResponse, BoardgameCreateRequest, BoardgameUpdateRequest, PaginatedBoardgamesResponse
+from services.review_service import review_service
+from schemas.review_api_mapper import ReviewAPIMapper
+from schemas.boardgame_api_mapper import BoardgameAPIMapper
+from schemas.api_schema import (BoardgameDisplayResponse, BoardgameCreateRequest, BoardgameUpdateRequest,
+                                PaginatedBoardgamesResponse, BoardgameDetailResponse)
 
 boardgame_router = APIRouter(prefix="/api/boardgames", tags=["boardgames"])
 
-@boardgame_router.get(
-    "/"
-)
+@boardgame_router.get("/")
 def get_all_boardgames():
     return boardgame_service.get_all_boardgames()
 
@@ -19,11 +21,13 @@ def get_boardgames(offset: int = Query(0, ge=0), limit: int = Query(10, ge=1, le
 
 @boardgame_router.get(
     "/{boardgame_id}",
-    response_model=BoardgameDisplayResponse
+    response_model=BoardgameDetailResponse
 )
 def get_boardgame(boardgame_id: int):
-    boardgame = boardgame_service.get_boardgame(boardgame_id)
-    return boardgame
+    boardgame_details = boardgame_service.get_boardgame(boardgame_id)
+    reviews_of_boardgame = review_service.get_reviews_for_boardgame(boardgame_id)
+    review_displays = [ReviewAPIMapper.review_to_display_response(review) for review in reviews_of_boardgame]
+    return BoardgameAPIMapper.boardgame_and_reviews_to_detail_response(boardgame_details, review_displays)
 
 @boardgame_router.post(
     "/",
