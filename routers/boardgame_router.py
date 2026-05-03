@@ -3,8 +3,7 @@ from services.boardgame_service import boardgame_service
 from services.review_service import review_service
 from schemas.review_api_mapper import ReviewAPIMapper
 from schemas.boardgame_api_mapper import BoardgameAPIMapper
-from schemas.api_schema import (BoardgameDisplayResponse, BoardgameCreateRequest, BoardgameUpdateRequest,
-                                PaginatedBoardgamesResponse, BoardgameDetailResponse)
+from schemas.api_schema import *
 
 boardgame_router = APIRouter(prefix="/api/boardgames", tags=["boardgames"])
 
@@ -51,3 +50,23 @@ def delete_boardgame(boardgame_id: int):
 )
 def update_boardgame(request: BoardgameUpdateRequest):
     return boardgame_service.update_boardgame(request)
+
+
+# --------
+# Reviews
+# --------
+
+@boardgame_router.post(
+    "/reviews",
+    status_code=status.HTTP_201_ACCEPTED,
+    response_model=ReviewDisplayResponse
+)
+def create_review(request: ReviewCreateRequest):
+    return review_service.create_review(request)
+
+@boardgame_router.delete(
+    "/{review_id}",
+    status_code=status.HTTP_204_NO_CONTENT
+)
+def delete_review(review_id: int):
+    review_service.delete_review(review_id)
