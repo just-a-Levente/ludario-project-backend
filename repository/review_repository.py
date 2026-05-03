@@ -1,10 +1,23 @@
+import datetime
+
 from model.review import Review
 
 class ReviewRepository:
 
     def __init__(self):
         self.__reviews: dict[int, Review] = {}
+        self.__add_examples()
         self.__lastID: int = 0
+
+    def __add_examples(self):
+        self.insert_review(Review(
+            id=-1,
+            boardgame_id=1,
+            author="Admin",
+            stars=3,
+            comment="this board game is meh",
+            review_date=datetime.date(2026, 5, 1)
+        ))
 
     def reset_repo(self):
         self.__reviews = {}
