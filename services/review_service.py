@@ -16,7 +16,6 @@ class ReviewService:
 
     def create_review(self, create_request: ReviewCreateRequest) -> ReviewDisplayResponse:
         review_instance = ReviewAPIMapper.create_review_from_request(create_request)
-        print(review_instance)
         self.__repository.insert_review(review_instance)
         return ReviewAPIMapper.review_to_display_response(review_instance)
 
