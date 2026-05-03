@@ -14,10 +14,11 @@ class ReviewService:
     def get_review(self, review_id: int) -> Review | None:
         return self.__repository.get_review(review_id)
 
-    def create_review(self, create_request: ReviewCreateRequest) -> Review:
+    def create_review(self, create_request: ReviewCreateRequest) -> ReviewDisplayResponse:
         review_instance = ReviewAPIMapper.create_review_from_request(create_request)
+        print(review_instance)
         self.__repository.insert_review(review_instance)
-        return review_instance
+        return ReviewAPIMapper.review_to_display_response(review_instance)
 
     def delete_review(self, review_id: int) -> None:
         self.__repository.delete_review(review_id)
