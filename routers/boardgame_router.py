@@ -58,14 +58,14 @@ def update_boardgame(request: BoardgameUpdateRequest):
 
 @boardgame_router.post(
     "/reviews",
-    status_code=status.HTTP_201_ACCEPTED,
+    status_code=status.HTTP_201_CREATED,
     response_model=ReviewDisplayResponse
 )
 def create_review(request: ReviewCreateRequest):
     return review_service.create_review(request)
 
 @boardgame_router.delete(
-    "/{review_id}",
+    "/reviews/{review_id}",
     status_code=status.HTTP_204_NO_CONTENT
 )
 def delete_review(review_id: int):
