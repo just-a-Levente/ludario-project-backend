@@ -45,7 +45,7 @@ class PaginatedBoardgamesResponse(BaseModel):
     limit: int
 
 class BoardgameDetailResponse(BoardgameDisplayResponse):
-    reviews: list[ReviewReadResponse]
+    reviews: list[ReviewDisplayResponse]
 
 # -----------------
 # REVIEWS
