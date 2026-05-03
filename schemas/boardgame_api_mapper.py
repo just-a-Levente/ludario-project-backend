@@ -1,4 +1,5 @@
 from model.boardgame import Boardgame
+from model.review import Review
 from schemas.api_schema import *
 
 class BoardgameAPIMapper:
@@ -46,4 +47,21 @@ class BoardgameAPIMapper:
             maxNumberOfPlayers=boardgame.maxNumberOfPlayers,
             thumbnailURL=boardgame.thumbnailURL,
             tags=boardgame.tags
+        )
+
+    @staticmethod
+    def boardgame_and_reviews_to_detail_response(boardgame_display_response: BoardgameDisplayResponse, reviews: list[
+        ReviewDisplayResponse]) -> BoardgameDetailResponse:
+        return BoardgameDetailResponse(
+            id=boardgame_display_response.id,
+            name=boardgame_display_response.name,
+            producer=boardgame_display_response.producer,
+            description=boardgame_display_response.description,
+            price=boardgame_display_response.price,
+            numberOfCopies=boardgame_display_response.numberOfCopies,
+            minNumberOfPlayers=boardgame_display_response.minNumberOfPlayers,
+            maxNumberOfPlayers=boardgame_display_response.maxNumberOfPlayers,
+            thumbnailURL=boardgame_display_response.thumbnailURL,
+            tags=boardgame_display_response.tags,
+            reviews=reviews
         )

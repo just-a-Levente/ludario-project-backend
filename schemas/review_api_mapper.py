@@ -1,7 +1,7 @@
 import datetime
 
 from model.review import Review
-from api_schema import *
+from schemas.api_schema import *
 
 class ReviewAPIMapper:
 
