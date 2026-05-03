@@ -6,8 +6,8 @@ class ReviewRepository:
 
     def __init__(self):
         self.__reviews: dict[int, Review] = {}
-        self.__add_examples()
         self.__lastID: int = 0
+        self.__add_examples()
 
     def __add_examples(self):
         self.insert_review(Review(
@@ -17,6 +17,14 @@ class ReviewRepository:
             stars=3,
             comment="this board game is meh",
             review_date=datetime.date(2026, 5, 1)
+        ))
+        self.insert_review(Review(
+            id=-1,
+            boardgame_id=1,
+            author="Admin",
+            stars=4,
+            comment="this board game is good",
+            review_date=datetime.date(2026, 5, 3)
         ))
 
     def reset_repo(self):
@@ -30,10 +38,6 @@ class ReviewRepository:
     @property
     def number_of_reviews(self) -> int:
         return len(self.__reviews)
-
-    @property
-    def last_review_id(self) -> int:
-        return self.__lastID
 
     def __increment_last_id(self):
         self.__lastID += 1
@@ -50,7 +54,7 @@ class ReviewRepository:
 
     def insert_review(self, new_review: Review):
         if new_review.id == -1:
-            new_id = self.last_review_id
+            new_id = self.__lastID
             self.__increment_last_id()
             new_review.id = new_id
         self.__reviews[new_review.id] = new_review
