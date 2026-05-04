@@ -1,7 +1,7 @@
 from sqlalchemy import create_engine, func
 from sqlalchemy.orm import sessionmaker
 from model.boardgame import Boardgame
-from model.tables import Base, BoardgameORM
+from model.tables import Base, BoardgameORM, BoardgameTagORM
 from db import SessionLocal
 
 class BoardgameRepository:
@@ -69,7 +69,7 @@ class BoardgameRepository:
             minNumberOfPlayers=orm.minNumberOfPlayers,
             maxNumberOfPlayers=orm.maxNumberOfPlayers,
             thumbnailURL=orm.thumbnailURL,
-            tags=orm.tags.split(";") if orm.tags else [],
+            tags=[t.tag for t in orm.tags],
         )
 
     def get_boardgame(self, boardgame_id: int) -> Boardgame | None:
@@ -94,8 +94,8 @@ class BoardgameRepository:
                 minNumberOfPlayers=new_boardgame.minNumberOfPlayers,
                 maxNumberOfPlayers=new_boardgame.maxNumberOfPlayers,
                 thumbnailURL=new_boardgame.thumbnailURL,
-                tags=";".join(new_boardgame.tags),
             )
+            orm.tags = [BoardgameTagORM(tag=t) for t in new_boardgame.tags]
             session.add(orm)
             session.commit()
             session.refresh(orm)
@@ -116,7 +116,7 @@ class BoardgameRepository:
             orm.minNumberOfPlayers = updated_boardgame.minNumberOfPlayers
             orm.maxNumberOfPlayers = updated_boardgame.maxNumberOfPlayers
             orm.thumbnailURL = updated_boardgame.thumbnailURL
-            orm.tags = ";".join(updated_boardgame.tags)
+            orm.tags = [BoardgameTagORM(tag=t) for t in updated_boardgame.tags]
             session.commit()
 
     def delete_boardgame(self, boardgame_id_to_delete: int):
