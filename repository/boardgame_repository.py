@@ -1,15 +1,18 @@
+from sqlalchemy import create_engine, func
+from sqlalchemy.orm import sessionmaker
 from model.boardgame import Boardgame
+from model.tables import Base, BoardgameORM
+from db import SessionLocal
 
 class BoardgameRepository:
 
     def __init__(self):
-        self.__boardgames: dict[int, Boardgame] = {}
-        self.__lastID: int = 0
         self.__fill_with_examples()
 
     def __fill_with_examples(self):
+        if self.number_of_boardgames > 0:
+            return  # don't re-seed if data already exists
         self.insert_boardgame(Boardgame(
-            id=-1,
             name="Saboteur",
             producer="Piatnik",
             description="Description of Saboteur",
@@ -21,7 +24,6 @@ class BoardgameRepository:
             tags=["social deduction", "mining"]
         ))
         self.insert_boardgame(Boardgame(
-            id=-1,
             name="Settlers of Catan",
             producer="Kosmos",
             description="Description of Settlers of Catan",
@@ -33,7 +35,6 @@ class BoardgameRepository:
             tags=["social deduction", "colony builder"]
         ))
         self.insert_boardgame(Boardgame(
-            id=-1,
             name="Dune",
             producer="Gale Force Nine",
             description="Description of Dune",
@@ -45,41 +46,82 @@ class BoardgameRepository:
             tags=["social deduction", "colony builder"]
         ))
 
-    def reset_repo(self):
-        self.__boardgames = {}
-        self.__lastID = 0
-
     @property
     def all_boardgames(self) -> list[Boardgame]:
-        return list(self.__boardgames.values())
+        with SessionLocal() as session:
+            orms = session.query(BoardgameORM).all()
+            return [self.__to_model(orm) for orm in orms]
 
     @property
     def number_of_boardgames(self) -> int:
-        return len(self.__boardgames)
+        with SessionLocal() as session:
+            return session.query(func.count(BoardgameORM.id)).scalar()
 
-    @property
-    def last_id(self) -> int:
-        return self.__lastID
-
-    def __increment_last_id(self):
-        self.__lastID += 1
+    def __to_model(self, orm: BoardgameORM) -> Boardgame:
+        return Boardgame(
+            id=orm.id,
+            hidden=orm.hidden,
+            name=orm.name,
+            producer=orm.producer,
+            description=orm.description,
+            price=orm.price,
+            numberOfCopies=orm.numberOfCopies,
+            minNumberOfPlayers=orm.minNumberOfPlayers,
+            maxNumberOfPlayers=orm.maxNumberOfPlayers,
+            thumbnailURL=orm.thumbnailURL,
+            tags=orm.tags.split(";") if orm.tags else [],
+        )
 
     def get_boardgame(self, boardgame_id: int) -> Boardgame | None:
-        return self.__boardgames.get(boardgame_id)
+        with SessionLocal() as session:
+            orm = session.get(BoardgameORM, boardgame_id)
+            return self.__to_model(orm) if orm else None
 
     def get_boardgames(self, offset: int, limit: int) -> list[Boardgame]:
-        boardgames_list = list(self.__boardgames.values())
-        return boardgames_list[offset : offset + limit]
+        with SessionLocal() as session:
+            orms = session.query(BoardgameORM).offset(offset).limit(limit).all()
+            return [self.__to_model(orm) for orm in orms]
 
     def insert_boardgame(self, new_boardgame: Boardgame):
-        if new_boardgame.id == -1:
-            new_id = self.last_id
-            self.__increment_last_id()
-            new_boardgame.id = new_id
-        self.__boardgames[new_boardgame.id] = new_boardgame
+        with SessionLocal() as session:
+            orm = BoardgameORM(
+                name=new_boardgame.name,
+                hidden=new_boardgame.hidden,
+                producer=new_boardgame.producer,
+                description=new_boardgame.description,
+                price=new_boardgame.price,
+                numberOfCopies=new_boardgame.numberOfCopies,
+                minNumberOfPlayers=new_boardgame.minNumberOfPlayers,
+                maxNumberOfPlayers=new_boardgame.maxNumberOfPlayers,
+                thumbnailURL=new_boardgame.thumbnailURL,
+                tags=";".join(new_boardgame.tags),
+            )
+            session.add(orm)
+            session.commit()
+            session.refresh(orm)
+            new_boardgame.id = orm.id
+            return new_boardgame
 
     def update_boardgame(self, updated_boardgame: Boardgame):
-        self.__boardgames[updated_boardgame.id] = updated_boardgame
+        with SessionLocal() as session:
+            orm = session.get(BoardgameORM, updated_boardgame.id)
+            if orm is None:
+                return
+            orm.hidden = updated_boardgame.hidden
+            orm.name = updated_boardgame.name
+            orm.producer = updated_boardgame.producer
+            orm.description = updated_boardgame.description
+            orm.price = updated_boardgame.price
+            orm.numberOfCopies = updated_boardgame.numberOfCopies
+            orm.minNumberOfPlayers = updated_boardgame.minNumberOfPlayers
+            orm.maxNumberOfPlayers = updated_boardgame.maxNumberOfPlayers
+            orm.thumbnailURL = updated_boardgame.thumbnailURL
+            orm.tags = ";".join(updated_boardgame.tags)
+            session.commit()
 
     def delete_boardgame(self, boardgame_id_to_delete: int):
-        self.__boardgames.pop(boardgame_id_to_delete)
+        with SessionLocal() as session:
+            orm = session.get(BoardgameORM, boardgame_id_to_delete)
+            if orm:
+                session.delete(orm)
+                session.commit()
