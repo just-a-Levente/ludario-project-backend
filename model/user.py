@@ -1,7 +1,12 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, computed_field
 
 class User(BaseModel):
-    email: str
-    username: str
+    email:         str
+    username:      str
     password_hash: str
-    is_admin: bool
+    roles:         list[str] = []
+
+    @computed_field
+    @property
+    def is_admin(self) -> bool:
+        return "admin" in self.roles
