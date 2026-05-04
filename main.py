@@ -3,7 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from routers.boardgame_router import boardgame_router
 from routers.status_router import status_router
 from routers.faker_router import faker_router
-import db
+from routers.user_router import user_router
 
 app = FastAPI(title="LudarioAPI")
 
@@ -18,6 +18,7 @@ app.add_middleware(
 app.include_router(boardgame_router)
 app.include_router(status_router)
 app.include_router(faker_router)
+app.include_router(user_router)
 
 
 @app.get("/")
