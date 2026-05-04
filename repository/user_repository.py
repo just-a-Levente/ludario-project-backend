@@ -73,8 +73,3 @@ class UserRepository:
             session.add(orm)
             session.commit()
             return user
-
-    @property
-    def number_of_users(self) -> int:
-        with SessionLocal() as session:
-            return session.query(func.count(UserORM.email)).scalar()
