@@ -10,8 +10,6 @@ ACTION_MAP = {
     ("POST",   "/api/reviews"):        "CREATE_REVIEW",
     ("PUT",    "/api/reviews"):        "UPDATE_REVIEW",
     ("DELETE", "/api/reviews"):        "DELETE_REVIEW",
-    ("POST",   "/api/users/login"):    "LOGIN",
-    ("POST",   "/api/users/register"): "REGISTER",
     ("GET",    "/api/faker/start"):    "FAKER_START",
     ("GET",    "/api/faker/stop"):     "FAKER_STOP",
 }
@@ -38,16 +36,12 @@ class LogMiddleware(BaseHTTPMiddleware):
         if not action:
             return response
 
-        # mark failed logins
-        if action == "LOGIN" and response.status_code == 401:
-            action = "LOGIN_FAILED"
-
         user_role = request.headers.get("User-Role", "user")
         # TODO: maybe give more details to logs? (based on specific request and response,
         #  in another method most probably)
         details = f"{request.method} {request.url.path} → {response.status_code}"
 
-        # TODO: let only successful (and LOGIN_FAILED) operations be logged
+        # TODO: let only successful operations be logged
         log_service.log(
             user_email=user_email,
             user_role=user_role,
