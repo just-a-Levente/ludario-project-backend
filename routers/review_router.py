@@ -18,3 +18,5 @@ def create_review(request: ReviewCreateRequest):
 )
 def delete_review(review_id: int):
     review_service.delete_review(review_id)
+
+# TODO: add PUT (update) to reviews

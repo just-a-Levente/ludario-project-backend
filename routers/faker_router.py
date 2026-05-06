@@ -4,7 +4,7 @@ from services.boardgame_service import boardgame_service
 from services.faker_service import generate_fake_boardgame
 from services.websocket_service import ws_manager
 
-faker_router = APIRouter(prefix="/api/boardgames/faker", tags=["faker"])
+faker_router = APIRouter(prefix="/api/faker", tags=["faker"])
 
 faker_task: asyncio.Task | None = None
 
