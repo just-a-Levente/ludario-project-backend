@@ -41,6 +41,7 @@ def create_boardgame(request: BoardgameCreateRequest):
     status_code=status.HTTP_204_NO_CONTENT
 )
 def delete_boardgame(boardgame_id: int):
+    review_service.delete_reviews_for_boardgame(boardgame_id)  # first we have to delete the reviews
     boardgame_service.delete_boardgame(boardgame_id)
 
 @boardgame_router.put(
@@ -50,23 +51,3 @@ def delete_boardgame(boardgame_id: int):
 )
 def update_boardgame(request: BoardgameUpdateRequest):
     return boardgame_service.update_boardgame(request)
-
-
-# --------
-# Reviews
-# --------
-
-@boardgame_router.post(
-    "/reviews",
-    status_code=status.HTTP_201_CREATED,
-    response_model=ReviewDisplayResponse
-)
-def create_review(request: ReviewCreateRequest):
-    return review_service.create_review(request)
-
-@boardgame_router.delete(
-    "/reviews/{review_id}",
-    status_code=status.HTTP_204_NO_CONTENT
-)
-def delete_review(review_id: int):
-    review_service.delete_review(review_id)

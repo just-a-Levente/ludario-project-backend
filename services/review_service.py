@@ -22,6 +22,11 @@ class ReviewService:
     def delete_review(self, review_id: int) -> None:
         self.__repository.delete_review(review_id)
 
+    def delete_reviews_for_boardgame(self, boardgame_id: int) -> None:
+        reviews_to_delete = self.__repository.get_reviews_for_boardgame(boardgame_id)
+        for review in reviews_to_delete:
+            self.__repository.delete_review(review.id)
+
     def update_review(self, update_request: ReviewUpdateRequest) -> Review:
         review_instance = ReviewAPIMapper.update_review_from_request(update_request)
         self.__repository.update_review(review_instance)

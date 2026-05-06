@@ -1,10 +1,13 @@
-from fastapi import FastAPI, Response, status
+from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from routers.boardgame_router import boardgame_router
+from routers.review_router import review_router
 from routers.status_router import status_router
 from routers.faker_router import faker_router
 from routers.user_router import user_router
 from routers.chat_router import chat_router
+from middleware.log_middleware import LogMiddleware
+
 
 app = FastAPI(title="LudarioAPI")
 
@@ -15,8 +18,10 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+app.add_middleware(LogMiddleware)
 
 app.include_router(boardgame_router)
+app.include_router(review_router)
 app.include_router(status_router)
 app.include_router(faker_router)
 app.include_router(user_router)
