@@ -77,7 +77,7 @@ class LogService:
             )
 
 
-    def log(self, user_email: str, user_role: str, action: str, details: str, ip_address: str):
+    def log(self, user_email: str, user_role: str, action: str, details: str):
         with SessionLocal() as session:
             entry = LogEntryORM(
                 user_email=user_email,
