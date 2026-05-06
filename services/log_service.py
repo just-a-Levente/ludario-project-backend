@@ -12,15 +12,18 @@ REQUEST_WINDOW      = timedelta(minutes=1)
 
 class LogService:
 
-    def __count_recent(self, user_email: str, action_filter, window: timedelta) -> int:
+    # TODO: this looks bad with the parameters
+    def __count_recent(self, user_email: str, action: str | None, like: str | None, window: timedelta) -> int:
         since = datetime.now(timezone.utc) - window
         with SessionLocal() as session:
             query = session.query(func.count(LogEntryORM.id)).filter(
                 LogEntryORM.user_email == user_email,
                 LogEntryORM.timestamp >= since,
             )
-            if action_filter:
-                query = query.filter(action_filter)
+            if action:
+                query = query.filter(LogEntryORM.action == action)
+            if like:
+                query = query.filter(LogEntryORM.action.startswith(like))
             return query.scalar()
 
 
@@ -42,8 +45,9 @@ class LogService:
         if action == "LOGIN_FAILED":
             count = self.__count_recent(
                 user_email,
-                LogEntryORM.action == "LOGIN_FAILED",
-                FAILED_LOGIN_WINDOW
+                "LOGIN_FAILED",
+                like=None,
+                window=FAILED_LOGIN_WINDOW
             )
             if count >= FAILED_LOGIN_LIMIT:
                 self.__add_to_observation_list(
@@ -55,7 +59,8 @@ class LogService:
         if "DELETE" in action:
             count = self.__count_recent(
                 user_email,
-                LogEntryORM.action.like("%DELETE%"),
+                None,
+                "DELETE",
                 DELETE_WINDOW
             )
             if count >= DELETE_LIMIT:
@@ -67,8 +72,9 @@ class LogService:
         # Check high request frequency
         count = self.__count_recent(
             user_email,
-            None,
-            REQUEST_WINDOW
+            action=None,
+            like=None,
+            window=REQUEST_WINDOW
         )
         if count >= REQUEST_LIMIT:
             self.__add_to_observation_list(

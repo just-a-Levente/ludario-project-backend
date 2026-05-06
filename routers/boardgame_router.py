@@ -7,7 +7,7 @@ from schemas.api_schema import *
 
 boardgame_router = APIRouter(prefix="/api/boardgames", tags=["boardgames"])
 
-@boardgame_router.get("/")
+@boardgame_router.get("")
 def get_all_boardgames():
     return boardgame_service.get_all_boardgames()
 
@@ -29,7 +29,7 @@ def get_boardgame(boardgame_id: int):
     return BoardgameAPIMapper.boardgame_and_reviews_to_detail_response(boardgame_details, review_displays)
 
 @boardgame_router.post(
-    "/",
+    "",
     status_code=status.HTTP_201_CREATED,
     response_model=BoardgameDisplayResponse
 )
@@ -45,7 +45,7 @@ def delete_boardgame(boardgame_id: int):
     boardgame_service.delete_boardgame(boardgame_id)
 
 @boardgame_router.put(
-    "/",
+    "",
     status_code=status.HTTP_202_ACCEPTED,
     response_model=BoardgameDisplayResponse
 )

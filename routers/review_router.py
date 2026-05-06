@@ -5,7 +5,7 @@ from services.review_service import review_service
 review_router = APIRouter(prefix="/api/reviews", tags=["reviews"])
 
 @review_router.post(
-    "/",
+    "",
     status_code=status.HTTP_201_CREATED,
     response_model=ReviewDisplayResponse
 )

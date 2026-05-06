@@ -47,6 +47,7 @@ class LogMiddleware(BaseHTTPMiddleware):
         #  in another method most probably)
         details = f"{request.method} {request.url.path} → {response.status_code}"
 
+        # TODO: let only successful (and LOGIN_FAILED) operations be logged
         log_service.log(
             user_email=user_email,
             user_role=user_role,
