@@ -1,5 +1,5 @@
-from datetime import date
-from sqlalchemy import ForeignKey
+from datetime import date, datetime
+from sqlalchemy import ForeignKey, DateTime
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 
 class Base(DeclarativeBase):
@@ -96,3 +96,25 @@ class UserRoleORM(Base):
 
     user_email: Mapped[str] = mapped_column(ForeignKey("users.email"), primary_key=True)
     role_id:    Mapped[int] = mapped_column(ForeignKey("roles.id"), primary_key=True)
+
+
+
+# -----------------------------
+# TABLES FOR LOGGING ACTIVITIES
+# -----------------------------
+
+class LogEntryORM(Base):
+    __tablename__ = "log_entries"
+    id:         Mapped[int]      = mapped_column(primary_key=True, autoincrement=True)
+    user_email: Mapped[str]      = mapped_column(ForeignKey("users.email"))
+    user_role:  Mapped[str]
+    action:     Mapped[str]
+    details:    Mapped[str]
+    timestamp:  Mapped[datetime] = mapped_column(DateTime(timezone=True))
+
+
+class ObservationListORM(Base):
+    __tablename__ = "observation_list"
+    user_email: Mapped[str]      = mapped_column(ForeignKey("users.email"), primary_key=True)
+    reason:     Mapped[str]
+    added_at:   Mapped[datetime] = mapped_column(DateTime(timezone=True))
