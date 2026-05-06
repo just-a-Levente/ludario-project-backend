@@ -6,6 +6,7 @@ from routers.status_router import status_router
 from routers.faker_router import faker_router
 from routers.user_router import user_router
 from routers.chat_router import chat_router
+from routers.log_router import log_router
 from middleware.log_middleware import LogMiddleware
 
 
@@ -26,6 +27,7 @@ app.include_router(status_router)
 app.include_router(faker_router)
 app.include_router(user_router)
 app.include_router(chat_router)
+app.include_router(log_router)
 
 
 @app.get("/")
