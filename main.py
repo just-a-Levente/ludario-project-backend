@@ -8,15 +8,19 @@ from routers.user_router import user_router
 from routers.chat_router import chat_router
 from routers.log_router import log_router
 from middleware.log_middleware import LogMiddleware
+import ssl
 
 
 app = FastAPI(title="LudarioAPI")
 
+ssl_context = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
+ssl_context.load_cert_chain('./cert/cert.pem', keyfile='./cert/key.pem')
+
 app.add_middleware(LogMiddleware)
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"], # TODO: not allow every IP, just the VM's
-    allow_credentials=False,   # allow_credentials is set to false cuz of wildcard, CHANGE LATER
+    allow_origins=["https://192.168.100.2:8080"],
+    allow_credentials=True,   # allow_credentials is set to false cuz of wildcard, CHANGE LATER
     allow_methods=["*"],
     allow_headers=["*"],
 )
