@@ -1,9 +1,10 @@
-from fastapi import APIRouter, status, Query
+from fastapi import APIRouter, status, Query, Depends
 from services.boardgame_service import boardgame_service
 from services.review_service import review_service
 from schemas.review_api_mapper import ReviewAPIMapper
 from schemas.boardgame_api_mapper import BoardgameAPIMapper
 from schemas.api_schema import *
+from utils.token_functions import require_permission
 
 boardgame_router = APIRouter(prefix="/api/boardgames", tags=["boardgames"])
 
@@ -33,14 +34,14 @@ def get_boardgame(boardgame_id: int):
     status_code=status.HTTP_201_CREATED,
     response_model=BoardgameDisplayResponse
 )
-def create_boardgame(request: BoardgameCreateRequest):
+def create_boardgame(request: BoardgameCreateRequest, _ = Depends(require_permission("create_boardgame"))):
     return boardgame_service.create_boardgame(request)
 
 @boardgame_router.delete(
     "/{boardgame_id}",
     status_code=status.HTTP_204_NO_CONTENT
 )
-def delete_boardgame(boardgame_id: int):
+def delete_boardgame(boardgame_id: int, _ = Depends(require_permission("delete_boardgame"))):
     review_service.delete_reviews_for_boardgame(boardgame_id)  # first we have to delete the reviews
     boardgame_service.delete_boardgame(boardgame_id)
 
@@ -49,5 +50,5 @@ def delete_boardgame(boardgame_id: int):
     status_code=status.HTTP_202_ACCEPTED,
     response_model=BoardgameDisplayResponse
 )
-def update_boardgame(request: BoardgameUpdateRequest):
+def update_boardgame(request: BoardgameUpdateRequest, _ = Depends(require_permission("update_boardgame"))):
     return boardgame_service.update_boardgame(request)

@@ -1,9 +1,10 @@
-from fastapi import APIRouter, HTTPException, status, Response
+from fastapi import APIRouter, HTTPException, status, Response, Cookie, Depends
+from jose import jwt, JWTError
 from repository.user_repository import UserRepository
 from model.user import User
 from schemas.user_api_schema import *
 from services.log_service import log_service
-from utils.token_functions import create_access_token, create_refresh_token
+from utils.token_functions import create_access_token, create_refresh_token, SECRET_KEY, ALGORITHM
 
 user_router = APIRouter(prefix="/api/users", tags=["users"])
 user_repo = UserRepository()
@@ -97,3 +98,42 @@ def login(request: LoginRequest, response: Response):
         roles=user.roles,
         permissions=permissions
     )
+
+@user_router.post("/refresh")
+async def refresh(response: Response, refresh_token: str = Cookie(None)):
+    if not refresh_token:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED)
+    try:
+        payload = jwt.decode(refresh_token, SECRET_KEY, algorithms=[ALGORITHM])
+        if payload.get("type") != "refresh":
+            raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED)
+    except JWTError:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid or expired refresh token")
+
+    # check it's still in DB (not logged out)
+    if not user_repo.refresh_token_exists(refresh_token):
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Session revoked")
+
+    email = payload["sub"]
+    permissions = list(user_repo.get_permissions_for_user(email))
+    user = user_repo.get_user_by_email(email)
+
+    new_access_token = create_access_token(user.email, user.roles, permissions)
+    response.set_cookie(
+        key="access_token",
+        value=new_access_token,
+        httponly=True,
+        secure=True,
+        samesite="strict",
+        max_age=REFRESH_COOKIE_NUMBER_OF_SECONDS,
+    )
+
+    return {"message": "Token refreshed"}
+
+@user_router.post("/logout")
+async def logout(response: Response, refresh_token: str = Cookie(None)):
+    if refresh_token:
+        user_repo.delete_refresh_token(refresh_token)
+    response.delete_cookie("access_token")
+    response.delete_cookie("refresh_token")
+    return {"message": "Logged out"}
