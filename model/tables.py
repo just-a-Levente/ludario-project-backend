@@ -62,7 +62,20 @@ class UserORM(Base):
     username:      Mapped[str]
     password_hash: Mapped[str]
 
-    roles:         Mapped[list["RoleORM"]] = relationship(secondary="user_roles", back_populates="users")
+    roles:          Mapped[list["RoleORM"]]         = relationship(secondary="user_roles", back_populates="users")
+    refresh_tokens: Mapped[list["RefreshTokenORM"]] = relationship(cascade="all, delete-orphan")
+
+
+class RefreshTokenORM(Base):
+    __tablename__ = "refresh_tokens"
+
+    id:          Mapped[int]      = mapped_column(primary_key=True, autoincrement=True)
+    user_email:  Mapped[str]      = mapped_column(ForeignKey("users.email"))
+    token_hash:  Mapped[str]      = mapped_column(unique=True)
+    created_at:  Mapped[datetime] = mapped_column(DateTime(timezone=True))
+    expires_at:  Mapped[datetime] = mapped_column(DateTime(timezone=True))
+
+    user:        Mapped["UserORM"] = relationship()
 
 
 class RoleORM(Base):

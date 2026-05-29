@@ -1,6 +1,8 @@
-from sqlalchemy import func
+import hashlib
+
+from datetime import datetime, timezone
 from model.user import User
-from model.tables import UserORM, RoleORM, PermissionORM
+from model.tables import UserORM, RoleORM, PermissionORM, RefreshTokenORM
 from db import SessionLocal
 
 class UserRepository:
@@ -73,3 +75,37 @@ class UserRepository:
             session.add(orm)
             session.commit()
             return user
+
+
+    @staticmethod
+    def __hash_token(token: str) -> str:
+        return hashlib.sha256(token.encode()).hexdigest()
+
+    def store_refresh_token(self, user_email: str, token: str, expires_at: datetime):
+        with SessionLocal() as session:
+            session.add(RefreshTokenORM(
+                user_email=user_email,
+                token_hash=self.__hash_token(token),
+                created_at=datetime.now(timezone.utc),
+                expires_at=expires_at
+            ))
+            session.commit()
+
+    def refresh_token_exists(self, token: str) -> bool:
+        with SessionLocal() as session:
+            entry = session.query(RefreshTokenORM).filter_by(
+                token_hash=self.__hash_token(token)
+            ).first()
+            return entry is not None and entry.expires_at > datetime.now(timezone.utc)
+
+    def delete_refresh_token(self, token: str):
+        with SessionLocal() as session:
+            session.query(RefreshTokenORM).filter_by(
+                token_hash=self.__hash_token(token)
+            ).delete()
+            session.commit()
+
+    def delete_all_refresh_tokens(self, user_email: str):
+        with SessionLocal() as session:
+            session.query(RefreshTokenORM).filter_by(user_email=user_email).delete()
+            session.commit()

@@ -1,11 +1,15 @@
-from fastapi import APIRouter, HTTPException, status
+from fastapi import APIRouter, HTTPException, status, Response
 from repository.user_repository import UserRepository
 from model.user import User
 from schemas.user_api_schema import *
 from services.log_service import log_service
+from utils.token_functions import create_access_token, create_refresh_token
 
 user_router = APIRouter(prefix="/api/users", tags=["users"])
 user_repo = UserRepository()
+
+ACCESS_COOKIE_NUMBER_OF_SECONDS = 900
+REFRESH_COOKIE_NUMBER_OF_SECONDS = 86400
 
 
 @user_router.post(
@@ -45,7 +49,7 @@ def register(request: RegisterRequest):
     "/login",
     response_model=UserResponse
 )
-def login(request: LoginRequest):
+def login(request: LoginRequest, response: Response):
     user = user_repo.get_user_by_email(request.email)
 
     if user is None or user.password_hash != request.password_hash:
@@ -58,6 +62,28 @@ def login(request: LoginRequest):
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid email or password")
 
     permissions = list(user_repo.get_permissions_for_user(request.email))
+
+    access_token = create_access_token(user.email, user.roles, permissions)
+    refresh_token = create_refresh_token(user.email)
+
+    user_repo.store_refresh_token(user.email, refresh_token)
+
+    response.set_cookie(
+        key="access_token",
+        value=access_token,
+        httponly=True,
+        secure=True,
+        samesite="strict",
+        max_age=ACCESS_COOKIE_NUMBER_OF_SECONDS,
+    )
+    response.set_cookie(
+        key="refresh_token",
+        value=refresh_token,
+        httponly=True,
+        secure=True,
+        samesite="strict",
+        max_age=REFRESH_COOKIE_NUMBER_OF_SECONDS,
+    )
 
     log_service.log(
         user_email=request.email,
