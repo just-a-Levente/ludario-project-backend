@@ -1,3 +1,4 @@
+from datetime import datetime, timezone, timedelta
 from fastapi import APIRouter, HTTPException, status, Response, Cookie, Depends
 from jose import jwt, JWTError
 from repository.user_repository import UserRepository
@@ -9,8 +10,8 @@ from utils.token_functions import create_access_token, create_refresh_token, SEC
 user_router = APIRouter(prefix="/api/users", tags=["users"])
 user_repo = UserRepository()
 
-ACCESS_COOKIE_NUMBER_OF_SECONDS = 900
-REFRESH_COOKIE_NUMBER_OF_SECONDS = 86400
+ACCESS_COOKIE_NUMBER_OF_SECONDS = 15 * 60
+REFRESH_COOKIE_NUMBER_OF_SECONDS = 24 * 60 * 60
 
 
 @user_router.post(
@@ -67,7 +68,8 @@ def login(request: LoginRequest, response: Response):
     access_token = create_access_token(user.email, user.roles, permissions)
     refresh_token = create_refresh_token(user.email)
 
-    user_repo.store_refresh_token(user.email, refresh_token)
+    expiry_date = datetime.now(timezone.utc) + timedelta(seconds=REFRESH_COOKIE_NUMBER_OF_SECONDS)
+    user_repo.store_refresh_token(user.email, refresh_token, expiry_date)
 
     response.set_cookie(
         key="access_token",

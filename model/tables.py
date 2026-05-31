@@ -63,7 +63,7 @@ class UserORM(Base):
     password_hash: Mapped[str]
 
     roles:          Mapped[list["RoleORM"]]         = relationship(secondary="user_roles", back_populates="users")
-    refresh_tokens: Mapped[list["RefreshTokenORM"]] = relationship(cascade="all, delete-orphan")
+    refresh_tokens: Mapped[list["RefreshTokenORM"]] = relationship(cascade="all, delete-orphan", back_populates="user")
 
 
 class RefreshTokenORM(Base):
