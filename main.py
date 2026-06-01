@@ -8,13 +8,9 @@ from routers.user_router import user_router
 from routers.chat_router import chat_router
 from routers.log_router import log_router
 from middleware.log_middleware import LogMiddleware
-import ssl
 
 
 app = FastAPI(title="LudarioAPI")
-
-ssl_context = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
-ssl_context.load_cert_chain('./cert/cert.pem', keyfile='./cert/key.pem')
 
 app.add_middleware(LogMiddleware)
 app.add_middleware(
