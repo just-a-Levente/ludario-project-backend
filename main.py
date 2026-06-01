@@ -19,7 +19,7 @@ ssl_context.load_cert_chain('./cert/cert.pem', keyfile='./cert/key.pem')
 app.add_middleware(LogMiddleware)
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["https://172.30.240.175:8008"],
+    allow_origins=["https://192.168.100.2:8008"],
     allow_credentials=True,   # allow_credentials is set to false cuz of wildcard, CHANGE LATER
     allow_methods=["*"],
     allow_headers=["*"],
