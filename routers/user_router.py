@@ -76,7 +76,7 @@ def login(request: LoginRequest, response: Response):
         value=access_token,
         httponly=True,
         secure=True,
-        samesite="strict",
+        samesite="none",
         max_age=ACCESS_COOKIE_NUMBER_OF_SECONDS,
     )
     response.set_cookie(
@@ -84,7 +84,7 @@ def login(request: LoginRequest, response: Response):
         value=refresh_token,
         httponly=True,
         secure=True,
-        samesite="strict",
+        samesite="none",
         max_age=REFRESH_COOKIE_NUMBER_OF_SECONDS,
     )
 
@@ -126,7 +126,7 @@ async def refresh(response: Response, refresh_token: str = Cookie(None)):
         value=new_access_token,
         httponly=True,
         secure=True,
-        samesite="strict",
+        samesite="none",
         max_age=REFRESH_COOKIE_NUMBER_OF_SECONDS,
     )
 
