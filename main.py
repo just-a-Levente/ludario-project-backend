@@ -15,7 +15,7 @@ app = FastAPI(title="LudarioAPI")
 app.add_middleware(LogMiddleware)
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["https://192.168.100.2:8008"],
+    allow_origins=["https://ludario-project.onrender.com:8008"],
     allow_credentials=True,   # allow_credentials is set to false cuz of wildcard, CHANGE LATER
     allow_methods=["*"],
     allow_headers=["*"],
