@@ -31,7 +31,10 @@ async def stop_faker():
         faker_task.cancel()
     return { "status": "stopped" }
 
-@faker_router.websocket("/ws")
+
+faker_realtime_router = APIRouter(prefix="/ws/faker", tags=["faker"])
+
+@faker_realtime_router.websocket("")
 async def websocket_endpoint(websocket: WebSocket):
     await ws_manager.connect(websocket)
     try:

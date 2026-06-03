@@ -16,7 +16,10 @@ async def get_chat_history(limit: int = 50):
     messages = await cursor.to_list(length=limit)
     return list(reversed(messages))
 
-@chat_router.websocket("/ws/{email}")
+
+chat_realtime_router = APIRouter(prefix="/ws/chat", tags=["chat"])
+
+@chat_realtime_router.websocket("/{email}")
 async def chat_websocket(websocket: WebSocket, email: str):
     await chat_ws_manager.connect(email, websocket)
     try:

@@ -3,9 +3,9 @@ from fastapi.middleware.cors import CORSMiddleware
 from routers.boardgame_router import boardgame_router
 from routers.review_router import review_router
 from routers.status_router import status_router
-from routers.faker_router import faker_router
+from routers.faker_router import faker_router, faker_realtime_router
 from routers.user_router import user_router
-from routers.chat_router import chat_router
+from routers.chat_router import chat_router, chat_realtime_router
 from routers.log_router import log_router
 from middleware.log_middleware import LogMiddleware
 
@@ -28,6 +28,9 @@ app.include_router(faker_router)
 app.include_router(user_router)
 app.include_router(chat_router)
 app.include_router(log_router)
+
+app.include_router(chat_realtime_router)
+app.include_router(faker_realtime_router)
 
 
 @app.get("/")
