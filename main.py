@@ -15,7 +15,7 @@ app = FastAPI(title="LudarioAPI")
 app.add_middleware(LogMiddleware)
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["https://ludario-project.onrender.com"],
+    allow_origins=["https://ludario-project.onrender.com", "https://ludario-project-new.onrender.com"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
